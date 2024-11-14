@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <title>ACCAD 5500: Creating Immersive Media for Planetariums</title>
+  <!-- Include Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Updated CSS styles */
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+      color: #c5c6c7;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative; /* For cursor trail positioning */
+    }
+
+    header {
+      background-color: transparent;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #66fcf1;
+      text-shadow: 0 0 2px #fff, 0 0 5px #66fcf1, 0 0 7px #66fcf1;
+    }
+
+    .content-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Unity game container styles */
+    .unity-section {
+      flex: 2;
+      padding-right: 20px;
+    }
+
+    .unity-container {
+      width: 100%;
+      background-color: #0b0c10;
+      border: 2px solid #45a29e;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    #unityLoader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #66fcf1;
+      font-size: 1.5em;
+      text-shadow: 0 0 5px #fff, 0 0 10px #66fcf1;
+    }
+
+    #fullscreenButton {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background-color: rgba(69, 162, 158, 0.5);
+      border: none;
+      color: #0b0c10;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #fullscreenButton:hover {
+      background-color: rgba(102, 252, 241, 0.8);
+    }
+
+    /* Options (main) styles */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Jump Into VR Button */
+    #jumpIntoVRButton {
+      background-color: #45a29e;
+      color: #0b0c10;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.2em;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    #jumpIntoVRButton:hover {
+      background-color: #66fcf1;
+    }
+
+    .section {
+      background-color: rgba(40, 40, 50, 0.8);
+      border: 1px solid #45a29e;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      padding: 20px;
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #66fcf1;
+      text-shadow: 0 0 2px #fff, 0 0 5px #66fcf1;
+      text-align: center; /* Centered the title */
+    }
+
+    .media-type-switcher {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .media-type-switcher button {
+      flex: 1;
+      background-color: #45a29e;
+      color: #0b0c10;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .media-type-switcher button.active {
+      background-color: #66fcf1;
+    }
+
+    .media-type-switcher button:not(:last-child) {
+      margin-right: 5px;
+    }
+
+    .upload-area {
+      margin-bottom: 15px;
+    }
+
+    .upload-area label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* Custom file input styling */
+    .custom-file-input {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .custom-file-input input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-input-label {
+      display: block;
+      background-color: #0b0c10;
+      border: 1px solid #45a29e;
+      border-radius: 4px;
+      padding: 10px;
+      text-align: center;
+      color: #c5c6c7;
+    }
+
+    .file-input-label:hover {
+      background-color: #1f2833;
+    }
+
+    .section button {
+      background-color: #45a29e;
+      color: #0b0c10;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .section button:hover {
+      background-color: #66fcf1;
+    }
+
+    /* Shared Preview */
+    .preview {
+      margin-top: 20px;
+      background-color: rgba(40, 40, 50, 0.8);
+      border: 1px solid #45a29e;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 200px;
+      box-sizing: border-box;
+    }
+
+    .preview img,
+    .preview video {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+
+    /* Environment Section */
+    .environment-section {
+      width: 100%;
+      text-align: center;
+      padding: 20px;
+      background-color: transparent;
+    }
+
+    .environment-section button {
+      background-color: #45a29e;
+      color: #0b0c10;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.2em;
+    }
+
+    .environment-section button:hover {
+      background-color: #66fcf1;
+    }
+
+    footer {
+      background-color: rgba(0, 0, 0, 0.5);
+      text-align: center;
+      padding: 10px;
+      color: #888;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    /* Glowing cursor trail */
+    .cursor-trail {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #66fcf1;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+      box-shadow: 0 0 8px #66fcf1, 0 0 16px #66fcf1;
+      animation: trail 0.5s linear forwards;
+    }
+
+    @keyframes trail {
+      from {
+        opacity: 0.8;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(2);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .content-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .unity-section {
+        padding-right: 0;
+        margin-bottom: 20px;
+      }
+
+      main {
+        width: 100%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>ACCAD 5500: Creating Immersive Media for Planetariums</h1>
+</header>
+
+<div class="content-container">
+  <!-- Unity View -->
+  <section class="unity-section">
+    <div class="unity-container" id="unityContainer">
+      <canvas id="unity-canvas" width="700" height="400" tabindex="-1" style="width: 100%; height: auto; background: #231F20"></canvas>
+      <div id="unityLoader">Loading...</div>
+      <button id="fullscreenButton">Fullscreen</button>
+    </div>
+  </section>
+
+  <!-- Options -->
+  <main>
+    <!-- Jump Into VR Button -->
+    <button id="jumpIntoVRButton">Jump Into VR</button>
+
+    <!-- Upload Media Section -->
+    <div class="section">
+      <h2>Upload Media</h2>
+      <!-- Media Type Switcher -->
+      <div class="media-type-switcher">
+        <button id="imageModeButton" class="active">Image</button>
+        <button id="videoModeButton">Video</button>
+      </div>
+      <!-- File Upload Areas -->
+      <div id="imageUpload" class="upload-area">
+        <div class="custom-file-input">
+          <label class="file-input-label" id="imageFileLabel">Choose Image File</label>
+          <input type="file" id="imageInput" accept="image/*">
+        </div>
+        <button id="uploadImageButton">Upload Image to Unity</button>
+      </div>
+      <div id="videoUpload" class="upload-area" style="display: none;">
+        <div class="custom-file-input">
+          <label class="file-input-label" id="videoFileLabel">Choose Video File</label>
+          <input type="file" id="videoFileInput" accept="video/*">
+        </div>
+        <button id="uploadVideoButton">Upload Video to Unity</button>
+      </div>
+    </div>
+
+    <!-- Shared Preview -->
+    <div class="preview" id="mediaPreview">
+      <!-- Media Preview will appear here -->
+    </div>
+  </main>
+</div>
+
+<!-- Environment Switch Section -->
+<div class="environment-section">
+  <button id="switchEnvironmentButton">Switch Environment</button>
+</div>
+
+<footer>
+  Made by OSU ACCAD
+</footer>
+
+<script src="Build/builds.loader.js"></script>
+<script>
+  var unityInstance = null;
+
+  createUnityInstance(document.querySelector("#unity-canvas"), {
+    dataUrl: "Build/e1129eb669e5c8d47048ca38b4bb5518.data",
+    frameworkUrl: "Build/574e42482e3df9de1cb577236a29435e.js",
+    codeUrl: "Build/5e32c21c9c6ddadda0552982ee55b404.wasm",
+    streamingAssetsUrl: "StreamingAssets",
+    companyName: "De-Panther",
+  productName: "Unity WebXR Export",
+  productVersion: "0.1",
+  // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+  // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+  }, (progress) => {
+    document.querySelector("#unityLoader").innerHTML = "Loading... " + Math.round(progress * 100) + "%";
+  }).then((instance) => {
+    unityInstance = instance;
+    document.querySelector("#unityLoader").style.display = "none";
+  }).catch((message) => {
+    alert(message);
+  });
+
+  // Fullscreen Button Handling
+  document.getElementById('fullscreenButton').addEventListener('click', function () {
+    unityInstance.SetFullscreen(1);
+  });
+
+  // Jump Into VR Button Handling
+  document.getElementById('jumpIntoVRButton').addEventListener('click', function () {
+    unityInstance.Module.WebXR.toggleVR();
+  });
+
+  // Media Type Switching
+  const imageModeButton = document.getElementById('imageModeButton');
+  const videoModeButton = document.getElementById('videoModeButton');
+  const imageUpload = document.getElementById('imageUpload');
+  const videoUpload = document.getElementById('videoUpload');
+
+  imageModeButton.addEventListener('click', function () {
+    imageModeButton.classList.add('active');
+    videoModeButton.classList.remove('active');
+    imageUpload.style.display = 'block';
+    videoUpload.style.display = 'none';
+  });
+
+  videoModeButton.addEventListener('click', function () {
+    videoModeButton.classList.add('active');
+    imageModeButton.classList.remove('active');
+    videoUpload.style.display = 'block';
+    imageUpload.style.display = 'none';
+  });
+
+  // Custom File Input Handling
+  let isValidImage = false;
+  const imageInput = document.getElementById('imageInput');
+  const imageFileLabel = document.getElementById('imageFileLabel');
+  imageInput.addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    imageFileLabel.textContent = '';
+    
+    if (file)
+    {
+      const image = new Image();
+      const objectURL = URL.createObjectURL(file);
+      
+      image.onload = function () {
+        if (image.width === image.height)
+        {
+          imageFileLabel.textContent = file.name;
+          isValidImage = true;
+        }
+        else
+        {
+          alert('Please select a square image.');
+          imageFileLabel.textContent = 'Choose Image File';
+          isValidImage = false;
+        }
+        
+        URL.revokeObjectURL(objectURL);
+      };
+      
+      image.src = objectURL;
+    }
+  });
+
+  const videoInput = document.getElementById('videoFileInput');
+  const videoFileLabel = document.getElementById('videoFileLabel');
+  videoInput.addEventListener('change', function () {
+    const fileName = videoInput.files[0] ? videoInput.files[0].name : 'Choose Video File';
+    videoFileLabel.textContent = fileName;
+  });
+
+  // Image Upload Handling
+  document.getElementById('uploadImageButton').addEventListener('click', function () {
+    if (isValidImage && imageInput.files && imageInput.files[0]) {
+      var file = imageInput.files[0];
+      var reader = new FileReader();
+      reader.onloadend = function (e) {
+        var imageData = e.target.result.split(',')[1]; // Base64 string
+
+        // Preview the image on the webpage
+        var imgPreview = document.createElement('img');
+        imgPreview.src = e.target.result;
+        var previewContainer = document.getElementById('mediaPreview');
+        previewContainer.innerHTML = '';
+        previewContainer.appendChild(imgPreview);
+
+        // Send image data to Unity
+        unityInstance.SendMessage('Spot Light', 'ReceiveImage', imageData);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Please select an image file.');
+    }
+  });
+
+  // Video Upload Handling
+  document.getElementById('uploadVideoButton').addEventListener('click', function () {
+    if (videoInput.files && videoInput.files[0]) {
+      var file = videoInput.files[0];
+
+      // Create a Blob URL
+      var videoBlobUrl = URL.createObjectURL(file);
+
+      // Preview the video on the webpage
+      var videoPreview = document.createElement('video');
+      videoPreview.src = videoBlobUrl;
+      videoPreview.controls = true;
+      var previewContainer = document.getElementById('mediaPreview');
+      previewContainer.innerHTML = '';
+      previewContainer.appendChild(videoPreview);
+
+      // Send the Blob URL to Unity
+      unityInstance.SendMessage('Spot Light', 'SetVideoURL', videoBlobUrl);
+    } else {
+      alert('Please select a video file.');
+    }
+  });
+
+  // Environment Switch Handling
+  document.getElementById('switchEnvironmentButton').addEventListener('click', function () {
+    unityInstance.SendMessage('Environment Manager', 'SwitchEnvironment');
+  });
+
+  // Glowing cursor trail effect
+  document.addEventListener('mousemove', function(e) {
+    var trail = document.createElement('div');
+    trail.className = 'cursor-trail';
+    trail.style.left = e.pageX + 'px';
+    trail.style.top = e.pageY + 'px';
+    document.body.appendChild(trail);
+    setTimeout(function() {
+      trail.remove();
+    }, 500); // Matches the animation duration
+  });
+</script>
+</body>
+</html>
