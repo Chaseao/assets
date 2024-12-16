@@ -360,21 +360,9 @@
 <script src="Build/Debug.loader.js"></script>
 <script>
   var unityInstance = null;
-  const gl = canvas.getContext('webgl2');
-  if (!gl) {
-    console.error("WebGL 2.0 is not supported on this browser.");
-  }
-  
-  const lodExtension = gl.getExtension('EXT_shader_texture_lod');
-  if (!lodExtension) {
-    console.warn("EXT_shader_texture_lod not supported.");
-  }
-  
-  const supportedExtensions = gl.getSupportedExtensions();
-  console.log("Supported Extensions:", supportedExtensions);
 
   createUnityInstance(document.querySelector("#unity-canvas"), {
-    dataUrl: "Build/35bbe775bf9fa76c67cd685a3df0b464.data",
+    dataUrl: "Build/6223a7be3fcf0f87a3f073fe06e90a88.data",
     frameworkUrl: "Build/af503cb7919907db0f471534e793be06.js",
     codeUrl: "Build/58e5f2a8d610fd9d5fedb857bbbbaa5c.wasm",
     streamingAssetsUrl: "StreamingAssets",
