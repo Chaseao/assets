@@ -385,7 +385,6 @@
     unityInstance.SetFullscreen(1);
   });
 
-  const screenCanvas = document.getElementById('unity-canvas');
   
   // Jump Into VR Button Handling
   document.getElementById('jumpIntoVRButton').addEventListener('click', function (evt) {
@@ -414,8 +413,9 @@
     else {
       xrManager.exitXRSession ();
       evt.target.textContent = 'Jump Into VR';
-      screenCanvas.clientWidth = 700;
-      screenCanvas.clientHeight = 400;
+      var element = document.getElementById('unity-canvas');
+      element.style.width = "700px";
+      element.style.height = "400px";
       xrManager.xrSession = null;
     }
   });
