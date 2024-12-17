@@ -330,14 +330,14 @@
           <label class="file-input-label" id="imageFileLabel">Choose Image File</label>
           <input type="file" id="imageInput" accept="image/*">
         </div>
-        <button id="uploadImageButton">Upload Image to Unity</button>
+        <button id="uploadImageButton">Display Image</button>
       </div>
       <div id="videoUpload" class="upload-area" style="display: none;">
         <div class="custom-file-input">
           <label class="file-input-label" id="videoFileLabel">Choose Video File</label>
           <input type="file" id="videoFileInput" accept="video/*">
         </div>
-        <button id="uploadVideoButton">Upload Video to Unity</button>
+        <button id="uploadVideoButton">Display Video</button>
       </div>
     </div>
 
@@ -384,10 +384,38 @@
   document.getElementById('fullscreenButton').addEventListener('click', function () {
     unityInstance.SetFullscreen(1);
   });
+  xrManager['isInSession'] = false;
 
   // Jump Into VR Button Handling
-  document.getElementById('jumpIntoVRButton').addEventListener('click', function () {
-    unityInstance.Module.WebXR.toggleVR();
+  document.getElementById('jumpIntoVRButton').addEventListener('click', function (evt) {
+    if (!xrManager['isInSession']) {
+      evt.target.textContent = 'Exit VR';
+      xrManager.BrowserObject.mainLoop.pause();
+
+
+      window.requestAnimationFrame(function () {
+        xrManager.ctx.clearColor(0, 0, 0, 0);
+        xrManager.ctx.clear(xrManager.ctx.COLOR_BUFFER_BIT | xrManager.ctx.DEPTH_BUFFER_BIT);
+      });
+      navigator.xr.requestSession('immersive-vr', {
+        requiredFeatures: xrManager.gameModule.WebXR.Settings.VRRequiredReferenceSpace,
+        optionalFeatures: []
+      }).then(function (session) {
+        session.isImmersive = true;
+        session.isInSession = true;
+        session.isAR = false;
+
+        xrManager.xrSession = session;
+        xrManager.onSessionStarted(session);
+        xrManager['isInSession'] = true;
+      }).catch(function (error) {
+      });
+    }
+    else {
+      xrManager.exitXRSession ();
+      evt.target.textContent = 'Jump Into VR';
+      xrManager['isInSession'] = false;
+    }
   });
 
   // Media Type Switching
