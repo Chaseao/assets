@@ -362,7 +362,7 @@
   var unityInstance = null;
 
   createUnityInstance(document.querySelector("#unity-canvas"), {
-    dataUrl: "Build/35b46185d1fe4f9b1751c8645c668c70.data",
+    dataUrl: "Build/6330c61600c0675d49d53d693a2ac007.data",
     frameworkUrl: "Build/574e42482e3df9de1cb577236a29435e.js",
     codeUrl: "Build/5e32c21c9c6ddadda0552982ee55b404.wasm",
     streamingAssetsUrl: "StreamingAssets",
@@ -384,11 +384,10 @@
   document.getElementById('fullscreenButton').addEventListener('click', function () {
     unityInstance.SetFullscreen(1);
   });
-  xrManager['isInSession'] = false;
 
   // Jump Into VR Button Handling
   document.getElementById('jumpIntoVRButton').addEventListener('click', function (evt) {
-    if (!xrManager['isInSession']) {
+    if (!xrManager.xrSession) {
       evt.target.textContent = 'Exit VR';
       xrManager.BrowserObject.mainLoop.pause();
 
@@ -407,14 +406,13 @@
 
         xrManager.xrSession = session;
         xrManager.onSessionStarted(session);
-        xrManager['isInSession'] = true;
       }).catch(function (error) {
       });
     }
     else {
       xrManager.exitXRSession ();
       evt.target.textContent = 'Jump Into VR';
-      xrManager['isInSession'] = false;
+      xrManager.xrSession = null;
     }
   });
 
