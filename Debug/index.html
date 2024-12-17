@@ -414,8 +414,10 @@
       xrManager.exitXRSession ();
       evt.target.textContent = 'Jump Into VR';
       var element = document.getElementById('unity-canvas');
-      element.style.width = "700px";
-      element.style.height = "400px";
+      element.style.width = '100%';
+      element.style.height = '400px';
+      element.width = 3808;
+        element.height = 1984;
       xrManager.xrSession = null;
     }
   });

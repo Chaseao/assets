@@ -330,14 +330,14 @@
           <label class="file-input-label" id="imageFileLabel">Choose Image File</label>
           <input type="file" id="imageInput" accept="image/*">
         </div>
-        <button id="uploadImageButton">Upload Image to Unity</button>
+        <button id="uploadImageButton">Display Image</button>
       </div>
       <div id="videoUpload" class="upload-area" style="display: none;">
         <div class="custom-file-input">
           <label class="file-input-label" id="videoFileLabel">Choose Video File</label>
           <input type="file" id="videoFileInput" accept="video/*">
         </div>
-        <button id="uploadVideoButton">Upload Video to Unity</button>
+        <button id="uploadVideoButton">Display Video</button>
       </div>
     </div>
 
@@ -362,9 +362,9 @@
   var unityInstance = null;
 
   createUnityInstance(document.querySelector("#unity-canvas"), {
-    dataUrl: "Build/35b46185d1fe4f9b1751c8645c668c70.data",
-    frameworkUrl: "Build/574e42482e3df9de1cb577236a29435e.js",
-    codeUrl: "Build/5e32c21c9c6ddadda0552982ee55b404.wasm",
+    dataUrl: "Build/d57f81622ba47007d77afa9f1beb79b0.data",
+    frameworkUrl: "Build/0f63f8def94b4216253e29b771659d63.js",
+    codeUrl: "Build/744ca0d2e8f5ca23a5a09a875486a76b.wasm",
     streamingAssetsUrl: "StreamingAssets",
     companyName: "De-Panther",
   productName: "Unity WebXR Export",
@@ -385,9 +385,41 @@
     unityInstance.SetFullscreen(1);
   });
 
+  
   // Jump Into VR Button Handling
-  document.getElementById('jumpIntoVRButton').addEventListener('click', function () {
-    unityInstance.Module.WebXR.toggleVR();
+  document.getElementById('jumpIntoVRButton').addEventListener('click', function (evt) {
+    if (!xrManager.xrSession) {
+      evt.target.textContent = 'Exit VR';
+      xrManager.BrowserObject.mainLoop.pause();
+
+
+      window.requestAnimationFrame(function () {
+        xrManager.ctx.clearColor(0, 0, 0, 0);
+        xrManager.ctx.clear(xrManager.ctx.COLOR_BUFFER_BIT | xrManager.ctx.DEPTH_BUFFER_BIT);
+      });
+      navigator.xr.requestSession('immersive-vr', {
+        requiredFeatures: xrManager.gameModule.WebXR.Settings.VRRequiredReferenceSpace,
+        optionalFeatures: []
+      }).then(function (session) {
+        session.isImmersive = true;
+        session.isInSession = true;
+        session.isAR = false;
+
+        xrManager.xrSession = session;
+        xrManager.onSessionStarted(session);
+      }).catch(function (error) {
+      });
+    }
+    else {
+      xrManager.exitXRSession ();
+      evt.target.textContent = 'Jump Into VR';
+      var element = document.getElementById('unity-canvas');
+      element.style.width = '100%';
+      element.style.height = '400px';
+      element.width = 3808;
+        element.height = 1984;
+      xrManager.xrSession = null;
+    }
   });
 
   // Media Type Switching
