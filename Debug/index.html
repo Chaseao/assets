@@ -340,7 +340,7 @@
         <button id="uploadVideoButton">Display Video</button>
       </div>
       <div class="default-media">
-        <button id="switchToGridButton">Switch to Grid</button>
+        <button id="toggleGrid">Toggle Grid</button>
         <button id="switchToIdleButton">Switch to Idle</button>
       </div>
     </div>
@@ -366,9 +366,9 @@
   var unityInstance = null;
 
   createUnityInstance(document.querySelector("#unity-canvas"), {
-    dataUrl: "Build/2248f14b1ce1e56c597ec3d47496271b.data",
-    frameworkUrl: "Build/188af3c0206b3751423d763f20635c13.js",
-    codeUrl: "Build/ed732faf235d6a5602547a4fc653da82.wasm",
+    dataUrl: "Build/2d6d14e421548bdd08703bb107f1aabf.data",
+    frameworkUrl: "Build/51d9c4424c49fa023c0efcd7d61dcc61.js",
+    codeUrl: "Build/0f21d7d243723b04dfe98a817cb9134a.wasm",
     streamingAssetsUrl: "StreamingAssets",
     companyName: "De-Panther",
   productName: "Unity WebXR Export",
@@ -534,8 +534,8 @@
   });
   
     // Default Media Switching
-  document.getElementById('switchToGridButton').addEventListener('click', function () {
-    unityInstance.SendMessage('Spot Light', 'LoadGrid');
+  document.getElementById('toggleGrid').addEventListener('click', function () {
+    unityInstance.SendMessage('Grid', 'ToggleGrid');
   });
   
     document.getElementById('switchToIdleButton').addEventListener('click', function () {
