@@ -339,6 +339,10 @@
         </div>
         <button id="uploadVideoButton">Display Video</button>
       </div>
+      <div class="default-media">
+        <button id="toggleGrid">Toggle Grid</button>
+        <button id="switchToIdleButton">Switch to Idle</button>
+      </div>
     </div>
 
     <!-- Shared Preview -->
@@ -357,14 +361,14 @@
   Made by OSU ACCAD
 </footer>
 
-<script src="Build/Debug.loader.js"></script>
+<script src="Build/Observatory.loader.js"></script>
 <script>
   var unityInstance = null;
 
   createUnityInstance(document.querySelector("#unity-canvas"), {
-    dataUrl: "Build/d57f81622ba47007d77afa9f1beb79b0.data",
-    frameworkUrl: "Build/0f63f8def94b4216253e29b771659d63.js",
-    codeUrl: "Build/744ca0d2e8f5ca23a5a09a875486a76b.wasm",
+    dataUrl: "Build/c550beaec27509da364133a3c8c5b4f1.data",
+    frameworkUrl: "Build/51d9c4424c49fa023c0efcd7d61dcc61.js",
+    codeUrl: "Build/0f21d7d243723b04dfe98a817cb9134a.wasm",
     streamingAssetsUrl: "StreamingAssets",
     companyName: "De-Panther",
   productName: "Unity WebXR Export",
@@ -528,6 +532,15 @@
       alert('Please select a video file.');
     }
   });
+  
+    // Default Media Switching
+  document.getElementById('toggleGrid').addEventListener('click', function () {
+    unityInstance.SendMessage('Grid', 'ToggleGrid');
+  });
+  
+    document.getElementById('switchToIdleButton').addEventListener('click', function () {
+        unityInstance.SendMessage('Spot Light', 'LoadIdle');
+    });
 
   // Environment Switch Handling
   document.getElementById('switchEnvironmentButton').addEventListener('click', function () {
